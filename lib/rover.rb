@@ -40,6 +40,14 @@ class Rover
     @position_y -= 1 unless s_bound
   end
 
+  def E
+    @position_x += 1 unless e_bound
+  end
+
+  def W
+    @position_x -= 1 unless w_bound
+  end
+
   def n_bound
     @position_y == @plateau_y
   end
@@ -48,6 +56,13 @@ class Rover
     @position_y == 0
   end
 
+  def e_bound
+    @position_x == @plateau_x
+  end
+
+  def w_bound
+    @position_x == 0
+  end
 
   def assert(value, message="Assertion failed")
     raise Exception, message, caller unless value

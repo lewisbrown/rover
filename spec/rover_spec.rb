@@ -27,9 +27,8 @@ RSpec.describe 'Rover' do
     end
 
     it 'can move' do
-      skip
       r.move
-      expect(r.position).to eq [3,3]
+      expect(r.position_y).to eq 3
     end
   end
   
