@@ -1,36 +1,77 @@
-class Object
-  def member(enumerable)
-    enumerable.include? self
-  end
-end
+require 'helpers'
 
-class Rover
+module MarsRover
+class Rover 
+  
+  using Membership
+  using Constantize
 
-  attr_accessor :position_x
-  attr_accessor :position_y
+#  N = 0
+#  E = 1
+#  S = 2
+#  W = 3
+#
+#  Directions = [:N, :E, :S, :W]
+
+  Directions = Hash[:N, 0, :E, 1, :S, 2, :W, 3]
+  Directions.merge! Directions.invert
+  Directions.compare_by_identity
+
+  Commands = [:R, :L, :M]
+
+  attr_accessor :position_x, :position_y
 
   attr_accessor :direction
   
-  attr_accessor :plateau_x
-  attr_accessor :plateau_y
+  attr_accessor :plateau_x,:plateau_y 
 
-  DIRECTIONS = [:N, :S, :E, :W]
-
-  def initialize(position: [0,0], direction: :N, plateau: [0,0])
-    assert direction.member(DIRECTIONS), "invalid direction"
+  attr_accessor :commands
+  
+  def initialize(position: [0,0], direction: :N, commands: [], plateau: [0,0])
+    validate_direction direction
+    validate_plateau plateau
+    validate_position position, plateau
+    validate_commands commands
 
     @position_x = position[0]
     @position_y = position[1]
 
     @direction = direction
 
+    @commands = commands
+
     @plateau_x = plateau[0]
     @plateau_y = plateau[1]
   end
 
+  def to_s
+    "#{@position_x} #{@position_y} #{@direction}"
+  end
+
+  alias status to_s
+
+  def do_commands
+    @commands.each do |c|
+      send c
+    end
+  end
+
+  def turn_left
+    @direction = Directions[(Directions[@direction] - 1)%4]
+  end
+
+  def turn_right
+    @direction = Directions[(Directions[@direction] + 1)%4]
+  end
+
+  alias L turn_left
+  alias R turn_right
+
   def move
     send @direction
   end
+
+  alias M move
 
   def N
     @position_y += 1 unless n_bound
@@ -64,8 +105,27 @@ class Rover
     @position_x == 0
   end
 
+  private
+
   def assert(value, message="Assertion failed")
     raise Exception, message, caller unless value
   end
 
+  def validate_position(position, plateau)
+    assert position.each_with_index {|p, i| p.member? (0..plateau[i])}, "invalid position" 
+  end
+
+  def validate_plateau(plateau)
+    assert plateau.all? {|v| v >= 0}, "invalid plateau" 
+  end
+
+  def validate_commands(commands)
+    assert commands.all? {|c| c.member?(Commands)}, "invalid command(s)"
+  end
+
+  def validate_direction(direction)
+    assert direction.member?(Directions), "invalid direction"
+  end
 end
+
+end #module
