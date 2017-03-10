@@ -1,11 +1,10 @@
 #!/bin/env ruby
 
-include-relative 'lib/rover'
+require_relative '../lib/mission'
 
-m = Mission.new STDIN
+m = MarsRover::Mission.new(STDIN)
+m.process
 
-m.set_plateau
-
-while !m.input.eof?
-  r = Rover.new m.get_next_rover_config
-   
+m.rover_results.each do |result| 
+  puts result
+end

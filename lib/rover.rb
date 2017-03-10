@@ -1,4 +1,4 @@
-require 'helpers'
+require_relative 'helpers'
 
 module MarsRover
   class Rover
@@ -17,7 +17,7 @@ module MarsRover
     attr_accessor :plateau_x,:plateau_y
     attr_accessor :commands
 
-    def initialize(position: [0,0], direction: :N, commands: [], plateau: [0,0])
+    def initialize(position, direction, commands, plateau)
       validate_direction direction
       validate_plateau plateau
       validate_position position, plateau
@@ -44,8 +44,8 @@ module MarsRover
       @commands.each do |c|
         send c
       end
+      self
     end
-
 
     def turn_left
       @direction = Directions[(Directions[@direction] - 1)%4]
@@ -65,7 +65,6 @@ module MarsRover
     alias M move
 
     def N
-      puts 'processing N: #{@position_y}'
       @position_y += 1 unless n_bound
     end
 

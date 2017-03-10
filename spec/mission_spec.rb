@@ -35,9 +35,16 @@ module MarsRover
         expect(mission.plateau).to eq [5,5]
       end
 
-      it "returns next rover config" do
+      it "returns rover config" do
         expect(mission.read_rover_config).to eq(
-                                               [[[1, 2], :N], [:L, :M, :L, :M, :L, :M, :L, :M, :M], [5, 5]])
+          [[[1, 2], :N], [:L, :M, :L, :M, :L, :M, :L, :M, :M], [5, 5]]
+        )
+      end
+
+      it "returns the next rover config" do
+        expect(mission.read_rover_config).to eq(
+          [[[3, 3], :E], [:M, :M, :R, :M, :M, :R, :M, :R, :R, :M], [5,5]]
+        )
       end
     end
 
